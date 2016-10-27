@@ -1,11 +1,9 @@
 <?php
 require_once 'directadmin/httpsocket.php';
 
-$root = dirname(__FILE__);
-
 Class cm_function {
 	
-    public function __construct() {
+    Public Function __construct() {
 
     }
 
@@ -14,9 +12,8 @@ Class cm_function {
 ##
 	
 	Private Function Get_Config($section){
-		
-		require_once $GLOBALS['root'] . __DIR__ . "/../config.php";
-		$config = new Config_Lite($GLOBALS['root'] . __DIR__ . "/../../config/config.ini");
+		require_once __DIR__ . "/config.php";
+		$config = new Config_Lite(__DIR__ . "/../config/config.ini");
 		return $config->getSection($section);
 	}
 	
@@ -32,6 +29,21 @@ Class cm_function {
 		
 	}
 
+	Public Function CheckForUpdates(){
+		#
+		# Still working on this. 
+		# dont want to get a request every time you load a new page.
+		#
+		$LiveUpdateBase = "https://update.tieme-alberts.nl/dacm.txt";
+				
+		$LatestVersion = @file_get_contents($LiveUpdateBase);
+		$CurrentVersion = 0.1;
+
+		if (version_compare($CurrentVersion, $LatestVersion, '<')){
+			return '<li><a href="https://github.com/t-me/DireactAdmin-Certificate-Manager" target="_blank" class="waves-effect waves-block"><i class="material-icons col-red">donut_large</i><span>UPDATE AVAILABLE</span></a></li>';
+		}
+			
+	}
 ##
  # DirectAdmin Functions
 ##
@@ -120,7 +132,7 @@ Class cm_function {
 		return $date->format('l d F Y');
 	}
 
-	private function formatValidityString($dateTime) {
+	Public Function formatValidityString($dateTime) {
 		if(strlen($dateTime) > 13) {
 			$dateTime = substr($dateTime, 0, 8).'T'.substr($dateTime, 8, -1);
 		} else {
