@@ -34,34 +34,30 @@ if($_GET['action'] && $_GET['action'] == "install"){
 		
 		$dpass = $func->encrypt($_POST['dapass'],$key);
 		
-		$root = $config->setSection('root', array(
-								'install' => false,
-								'privatekey' => $key,
-								'base_url' => $url
-							));
-		$config->write(__DIR__ . "/config/config.ini", $root);
-		
-		$dashboard = $config->setSection('dashboard', array(
-								'USERNAME' => $luser,
-								'PASSWORD' => $lpass,
-								'MAX_TRIES' => 3,
-								'UNLIMITED_TRIES' => false
-							));
-		$config->write(__DIR__ . "/config/config.ini", $dashboard);
-		
-		$directadmin = $config->setSection('directadmin', array(
-								'HOST' => $dahost,
-								'USERNAME' => $_POST['dauser'],
-								'PASSWORD' => $dpass
-							));
-		$config->write(__DIR__ . "/config/config.ini", $directadmin);
-		
-		$letsencrypt = $config->setSection('letsencrypt', array(
-								'DOMAINFOLDER' => $_POST['ledomain'],
-								'LETSFOLDER' => $_POST['lefolder'],
-								'PUBLICFOLDER' => $_POST['lepublic']
-							));
-		$config->write(__DIR__ . "/config/config.ini", $letsencrypt);
+		$configArr = array(
+						'root' => array(
+							'install' => false,
+							'privatekey' => $key,
+							'base_url' => $url
+						),
+						'dashboard' => array(
+							'USERNAME' => $luser,
+							'PASSWORD' => $lpass,
+							'MAX_TRIES' => 3,
+							'UNLIMITED_TRIES' => false
+						),
+						'directadmin' => array(
+							'HOST' => $dahost,
+							'USERNAME' => $_POST['dauser'],
+							'PASSWORD' => $dpass
+						),
+						'letsencrypt' => array(
+							'DOMAINFOLDER' => $_POST['ledomain'],
+							'LETSFOLDER' => $_POST['lefolder'],
+							'PUBLICFOLDER' => $_POST['lepublic']
+						));
+		$config->write(__DIR__ . "/config/config.ini", $configArr);					
+							
 		
 		$complete = true;
 	}
@@ -132,7 +128,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="privatekey" placeholder="Private Key" required autofocus>
 							</div>
-							<div class="help-info">Choose your private key to secure your DirectAdmin credentials</div>
+							<div class="help-info">Choose your private key to secure your DirectAdmin and login credentials</div>
 						</div>
 						<div class="input-group">
 							<span class="input-group-addon">
@@ -153,6 +149,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="username" placeholder="Username" required>
 							</div>
+							<div class="help-info">Username for Certificate Manager</div>
 						</div>
 						<div class="input-group">
 							<span class="input-group-addon">
@@ -161,9 +158,11 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="password" class="form-control" name="password" placeholder="Password" required>
 							</div>
+						<div class="help-info">Password for Certificate Manager</div>
 						</div>
 				</div>
-				<hr>
+			</div>
+			<div class="row m-b--20">
 				<div class="col-md-6">
 					<div class="msg">DirectAdmin options </div>
 					<div class="input-group">
@@ -173,7 +172,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 						<div class="form-line">
 							<input type="text" class="form-control" name="dahost" placeholder="DirectAdmin Host">
 						</div>
-						<div class="help-info">"Connection to DirectAdmin server "example: yourdirectadminhost.tld" for ssl connecction start with : ssl://"</div>
+						<div class="help-info">Connection to DirectAdmin server "example: directadminhost.tld" <br>for ssl connecction start with : ssl://</div>
 					</div>
 					<div class="input-group">
 						<span class="input-group-addon">
