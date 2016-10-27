@@ -1,5 +1,5 @@
 <?php
-$filename = 'config/config.ini';
+$filename = __DIR__ . "/config/config.ini";
 if (!file_exists($filename)) {
     echo "The file $filename does not exist";
 	echo "<br>";
@@ -8,13 +8,13 @@ if (!file_exists($filename)) {
 }
 
 
-require_once 'lib/config.php';
-$config = new Config_Lite('config/config.ini');
+require_once __DIR__ . "/lib/config.php";
+$config = new Config_Lite(__DIR__ . "/config/config.ini");
 $install = $config->getBool('root','install');
 
 if($_GET['action'] && $_GET['action'] == "install"){
 
-	require_once 'lib/functions.php';
+	require_once __DIR__ . "/lib/functions.php";
 	$func = new cm_function();
 
 	if ($install == true){
@@ -39,7 +39,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 								'privatekey' => $key,
 								'base_url' => $url
 							));
-		$config->write('config/config.ini', $root);
+		$config->write(__DIR__ . "/config/config.ini", $root);
 		
 		$dashboard = $config->setSection('dashboard', array(
 								'USERNAME' => $luser,
@@ -47,21 +47,21 @@ if($_GET['action'] && $_GET['action'] == "install"){
 								'MAX_TRIES' => 3,
 								'UNLIMITED_TRIES' => false
 							));
-		$config->write('config/config.ini', $dashboard);
+		$config->write(__DIR__ . "/config/config.ini", $dashboard);
 		
 		$directadmin = $config->setSection('directadmin', array(
 								'HOST' => $dahost,
 								'USERNAME' => $_POST['dauser'],
 								'PASSWORD' => $dpass
 							));
-		$config->write('config/config.ini', $directadmin);
+		$config->write(__DIR__ . "/config/config.ini", $directadmin);
 		
 		$letsencrypt = $config->setSection('letsencrypt', array(
 								'DOMAINFOLDER' => $_POST['ledomain'],
 								'LETSFOLDER' => $_POST['lefolder'],
 								'PUBLICFOLDER' => $_POST['lepublic']
 							));
-		$config->write('config/config.ini', $letsencrypt);
+		$config->write(__DIR__ . "/config/config.ini", $letsencrypt);
 		
 		$complete = true;
 	}
