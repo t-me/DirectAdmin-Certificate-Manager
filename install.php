@@ -21,9 +21,11 @@ if($_GET['action'] && $_GET['action'] == "install"){
 		
 		//sorry maar dit is misschien handig als men het ssl url invult en toch nog er achter https:// zet (kan de beste overkomen)
 		$dahost = $_POST['dahost'];
-		if (strstr($dahost, 'ssl://https://')) {
-			$dahost = str_replace('ssl://https://', 'ssl://', $dahost);
-		}
+
+		$forbiddenurl = array("ssl://https://", ":2222", ":2223", ":2222/", ":2223/");
+		$replaceurl= array("ssl://", "", "", "", "");
+				
+		$dahost = str_replace($forbiddenurl, $replaceurl, $dahost);
 			
 		$key = $_POST['privatekey'];
 		$url = $_POST['baseurl'];
