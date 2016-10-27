@@ -14,10 +14,10 @@
  * @link      https://github.com/pce/config_lite
  */
 
-require_once 'Config/Exception.php';
-require_once 'Config/Exception/InvalidArgument.php';
-require_once 'Config/Exception/Runtime.php';
-require_once 'Config/Exception/UnexpectedValue.php';
+require_once __DIR__ . "/Config/Exception.php";
+require_once __DIR__ . "/Config/Exception/InvalidArgument.php";
+require_once __DIR__ . "/Config/Exception/Runtime.php";
+require_once __DIR__ . "/Config/Exception/UnexpectedValue.php";
 
 /**
  * Config_Lite Class

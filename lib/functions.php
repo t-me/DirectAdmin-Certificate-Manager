@@ -8,21 +8,15 @@ Class cm_function {
     public function __construct() {
 
     }
-	
-	public function printr($obj){
-		echo "<pre>";
-		print_r ($obj,true);
-		echo "</pre>";
-	}
-	
+
 ##
  # Global Functions
 ##
 	
 	Private Function Get_Config($section){
 		
-		require_once $GLOBALS['root'] . '/../config.php';
-		$config = new Config_Lite($GLOBALS['root'] . '/../../config/config.ini');
+		require_once $GLOBALS['root'] . __DIR__ . "/../config.php";
+		$config = new Config_Lite($GLOBALS['root'] . __DIR__ . "/../../config/config.ini");
 		return $config->getSection($section);
 	}
 	
