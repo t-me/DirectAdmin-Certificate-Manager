@@ -19,6 +19,12 @@ if($_GET['action'] && $_GET['action'] == "install"){
 
 	if ($install == true){
 		
+		//sorry maar dit is misschien handig als men het ssl url invult en toch nog er achter https:// zet (kan de beste overkomen)
+		$dahost = $_POST['dahost'];
+		if (strstr($dahost, 'ssl://https://')) {
+			$dahost = str_replace('ssl://https://', 'ssl://', $dahost);
+		}
+			
 		$key = $_POST['privatekey'];
 		$url = $_POST['baseurl'];
 		$luser = $func->encrypt($_POST['username'],$key);
@@ -42,7 +48,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 		$config->write('config/config.ini', $dashboard);
 		
 		$directadmin = $config->setSection('directadmin', array(
-								'HOST' => $_POST['dahost'],
+								'HOST' => $dahost,
 								'USERNAME' => $_POST['dauser'],
 								'PASSWORD' => $dpass
 							));
@@ -100,6 +106,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 					<div class="col-xs-12">
 						<div class="alert bg-green align-center">
                             Install is complete, you can now login.
+							<a href="./index.php">here<a>
                         </div>
 					</div>
 				</div>
@@ -123,6 +130,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="privatekey" placeholder="Private Key" required autofocus>
 							</div>
+							<div class="help-info">Choose your private key to secure your DirectAdmin credentials</div>
 						</div>
 						<div class="input-group">
 							<span class="input-group-addon">
@@ -131,6 +139,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="baseurl" placeholder="Base URL" required>
 							</div>
+							<div class="help-info">Where you have this script installed "example: mysecurewebsite.tld/subfolder"</div>
 						</div>
 				</div>
 				<div class="col-md-6">						
@@ -162,7 +171,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 						<div class="form-line">
 							<input type="text" class="form-control" name="dahost" placeholder="DirectAdmin Host">
 						</div>
-						<div class="help-info">"for ssl connecction start with : ssl://"</div>
+						<div class="help-info">"Connection to DirectAdmin server "example: yourdirectadminhost.tld" for ssl connecction start with : ssl://"</div>
 					</div>
 					<div class="input-group">
 						<span class="input-group-addon">
