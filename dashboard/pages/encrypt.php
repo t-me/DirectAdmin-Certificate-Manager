@@ -135,7 +135,7 @@
 								print_r(str_replace("certificate=", "", $CERT_RESPONCE['details']););
 						echo '</pre>';
 						echo '<br>';
-						echo '<h3>Key</h3>'
+						echo '<h3>Key</h3>';
 						echo '<pre>';
 								print_r($CERT_RESPONCE['key']);
 						echo '</pre>';
