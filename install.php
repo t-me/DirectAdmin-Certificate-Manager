@@ -1,5 +1,5 @@
 <?php
-$filename = 'config/config.ini';
+$filename = __DIR__ . "/config/config.ini";
 if (!file_exists($filename)) {
     echo "The file $filename does not exist";
 	echo "<br>";
@@ -8,17 +8,25 @@ if (!file_exists($filename)) {
 }
 
 
-require_once 'lib/config.php';
-$config = new Config_Lite('config/config.ini');
+require_once __DIR__ . "/lib/config.php";
+$config = new Config_Lite(__DIR__ . "/config/config.ini");
 $install = $config->getBool('root','install');
 
 if($_GET['action'] && $_GET['action'] == "install"){
 
-	require_once 'lib/functions.php';
+	require_once __DIR__ . "/lib/functions.php";
 	$func = new cm_function();
 
 	if ($install == true){
 		
+		//sorry maar dit is misschien handig als men het ssl url invult en toch nog er achter https:// zet (kan de beste overkomen)
+		$dahost = $_POST['dahost'];
+
+		$forbiddenurl = array("ssl://https://", ":2222", ":2223", ":2222/", ":2223/");
+		$replaceurl= array("ssl://", "", "", "", "");
+				
+		$dahost = str_replace($forbiddenurl, $replaceurl, $dahost);
+			
 		$key = $_POST['privatekey'];
 		$url = $_POST['baseurl'];
 		$luser = $func->encrypt($_POST['username'],$key);
@@ -26,34 +34,30 @@ if($_GET['action'] && $_GET['action'] == "install"){
 		
 		$dpass = $func->encrypt($_POST['dapass'],$key);
 		
-		$root = $config->setSection('root', array(
-								'install' => false,
-								'privatekey' => $key,
-								'base_url' => $url
-							));
-		$config->write('config/config.ini', $root);
-		
-		$dashboard = $config->setSection('dashboard', array(
-								'USERNAME' => $luser,
-								'PASSWORD' => $lpass,
-								'MAX_TRIES' => 3,
-								'UNLIMITED_TRIES' => false
-							));
-		$config->write('config/config.ini', $dashboard);
-		
-		$directadmin = $config->setSection('directadmin', array(
-								'HOST' => $_POST['dahost'],
-								'USERNAME' => $_POST['dauser'],
-								'PASSWORD' => $dpass
-							));
-		$config->write('config/config.ini', $directadmin);
-		
-		$letsencrypt = $config->setSection('letsencrypt', array(
-								'DOMAINFOLDER' => $_POST['ledomain'],
-								'LETSFOLDER' => $_POST['lefolder'],
-								'PUBLICFOLDER' => $_POST['lepublic']
-							));
-		$config->write('config/config.ini', $letsencrypt);
+		$configArr = array(
+						'root' => array(
+							'install' => false,
+							'privatekey' => $key,
+							'base_url' => $url
+						),
+						'dashboard' => array(
+							'USERNAME' => $luser,
+							'PASSWORD' => $lpass,
+							'MAX_TRIES' => 3,
+							'UNLIMITED_TRIES' => false
+						),
+						'directadmin' => array(
+							'HOST' => $dahost,
+							'USERNAME' => $_POST['dauser'],
+							'PASSWORD' => $dpass
+						),
+						'letsencrypt' => array(
+							'DOMAINFOLDER' => $_POST['ledomain'],
+							'LETSFOLDER' => $_POST['lefolder'],
+							'PUBLICFOLDER' => $_POST['lepublic']
+						));
+		$config->write(__DIR__ . "/config/config.ini", $configArr);					
+							
 		
 		$complete = true;
 	}
@@ -100,6 +104,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 					<div class="col-xs-12">
 						<div class="alert bg-green align-center">
                             Install is complete, you can now login.
+							<a href="./index.php">here<a>
                         </div>
 					</div>
 				</div>
@@ -123,6 +128,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="privatekey" placeholder="Private Key" required autofocus>
 							</div>
+							<div class="help-info">Choose your private key to secure your DirectAdmin and login credentials</div>
 						</div>
 						<div class="input-group">
 							<span class="input-group-addon">
@@ -131,6 +137,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="baseurl" placeholder="Base URL" required>
 							</div>
+							<div class="help-info">Where you have this script installed "example: mysecurewebsite.tld/subfolder"</div>
 						</div>
 				</div>
 				<div class="col-md-6">						
@@ -142,6 +149,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="text" class="form-control" name="username" placeholder="Username" required>
 							</div>
+							<div class="help-info">Username for Certificate Manager</div>
 						</div>
 						<div class="input-group">
 							<span class="input-group-addon">
@@ -150,9 +158,11 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<div class="form-line">
 								<input type="password" class="form-control" name="password" placeholder="Password" required>
 							</div>
+						<div class="help-info">Password for Certificate Manager</div>
 						</div>
 				</div>
-				<hr>
+			</div>
+			<div class="row m-b--20">
 				<div class="col-md-6">
 					<div class="msg">DirectAdmin options </div>
 					<div class="input-group">
@@ -162,7 +172,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 						<div class="form-line">
 							<input type="text" class="form-control" name="dahost" placeholder="DirectAdmin Host">
 						</div>
-						<div class="help-info">"for ssl connecction start with : ssl://"</div>
+						<div class="help-info">Connection to DirectAdmin server "example: directadminhost.tld" <br>for ssl connecction start with : ssl://</div>
 					</div>
 					<div class="input-group">
 						<span class="input-group-addon">

@@ -18,7 +18,7 @@ if($_GET['action'] && $_GET['action'] == "changepw"){
 									'UNLIMITED_TRIES' => $curconfig['UNLIMITED_TRIES']
 								));
 								
-			$config->write('../config/config.ini', $dashboard);
+			$config->write(__DIR__ . "/../config/config.ini", $dashboard);
 		
 			$mess = array('1','New password is set.');
 			

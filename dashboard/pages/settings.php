@@ -15,7 +15,7 @@
 									'PASSWORD' => $dapass,
 								));
 								
-			$config->write('../config/config.ini', $daconfigs);
+			$config->write(__DIR__ . "/../config/config.ini", $daconfigs);
 
 			$da_mess = array('1','DirectAdmin settings changed.');
 			$daconfig = $config->getSection('directadmin');
@@ -34,7 +34,7 @@
 									'PUBLICFOLDER' => trim($_POST['lepublic']),
 								));
 								
-			$config->write('../config/config.ini', $leconfigs);
+			$config->write(__DIR__ . "/../config/config.ini", $leconfigs);
 
 			$le_mess = array('1','Let\'s Encrypt settings changed.');
 			$leconfig = $config->getSection('letsencrypt');

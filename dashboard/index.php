@@ -2,18 +2,18 @@
 error_reporting(-1);
 ini_set('display_errors', 'On');
 
-require_once "../lib/login/login.php";
+require_once __DIR__ . "/../lib/login/login.php";
 $authentication = new quickprotect();
 $authentication->checkLoginAndDirect();
 
-require_once '../lib/functions.php';
+require_once __DIR__ . "/../lib/functions.php";
 $func = new cm_function();
 
-require_once '../lib/config.php';
-$config = new Config_Lite('../config/config.ini');
+require_once __DIR__ . "/../lib/config.php";
+$config = new Config_Lite(__DIR__ . "/../config/config.ini");
 
-include 'elements/header.php';
-include 'elements/sidebar.php';
+include __DIR__ . "/elements/header.php";
+include __DIR__ . "/elements/sidebar.php";
 ?>
 
 	<section class="content">
@@ -23,23 +23,23 @@ include 'elements/sidebar.php';
 			if ($_GET){
 				$page = $_GET['page'];
 				if($page == 'password'){
-					include 'pages/password.php';
+					include __DIR__ . "/pages/password.php";
 				}elseif($page == 'domaininfo'){
-					include 'pages/domaininfo.php';
+					include __DIR__ . "/pages/domaininfo.php";
 				}elseif($page == 'settings'){
-					include 'pages/settings.php';
+					include __DIR__ . "/pages/settings.php";
 				}elseif($page == 'encrypt'){
-					include 'pages/encrypt.php';
+					include __DIR__ . "/pages/encrypt.php";
 				}else{
-					include 'pages/dashboard.php';
+					include __DIR__ . "/pages/dashboard.php";
 				}
 			}else{
-				include 'pages/dashboard.php';
+				include __DIR__ . "/pages/dashboard.php";
 			}
 		?>
 		</div>
 	</section>
 
 <?php
-include 'elements/footer.php';
+include __DIR__ . "/elements/footer.php";
 ?>

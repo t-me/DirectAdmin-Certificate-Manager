@@ -55,7 +55,7 @@ if($_GET){
 				&copy; 2016 <a target="_blank" href="https://www.tieme-alberts.nl/">Tieme Alberts</a>.
 			</div>
 			<div class="copyright">
-				<small><a target="_BLANK" href="https://bitbucket.org/t-me/direactadmin-certificate-manager">Bitbucket Project Page.</a></small>
+				<small><a target="_BLANK" href="https://github.com/t-me/direactadmin-certificate-manager">GitHub Project Page.</a></small>
 			</div>
 			<div class="version">
 				<b>Version: </b> 0.1
