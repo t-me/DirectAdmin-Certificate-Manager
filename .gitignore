@@ -10,5 +10,6 @@ Thumbs.db
 
 #  CM FILE'S & DIRS  #
 ######################
+update/
 .well-known/
 config/config.ini

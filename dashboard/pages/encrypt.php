@@ -93,17 +93,16 @@
 				<?php 
 				}elseif($step==3){
 
-					require_once __DIR__ . "../lib/letsencrypt/lescript.php";
-
-					class Logger { function __call($name, $arguments) { echo date('d-m-Y H:i:s')." [$name] ${arguments[0]}<br>"; }}
-
+					require_once __DIR__ . "/../../lib/letsencrypt/lescript.php";
+					require_once __DIR__ . "/../../lib/letsencrypt/logger.php";
+					
 					$logger = new Logger();
 					$maindomain = $domain;
 					
 					echo '<pre>';
 					try {
+						
 						$le = new \Lescript($_POST['lefolder'], $_POST['pufolder'], $logger);
-
 						$le->initAccount();
 						$le->signDomains(preg_split("/[\s,]+/",$_POST['domains']),$maindomain);
 
@@ -125,9 +124,24 @@
 				}elseif($step==4){
 					$CERT_RESPONCE = $func->SSL_SET_CERT($_POST['lefolder'],$domain);
 					
-					echo '<pre>';
-							print_r($CERT_RESPONCE);
-					echo '</pre>';
+					if($CERT_RESPONCE['error']== 1){
+						echo '<div class="alert alert-danger"><strong>Oh snap!</strong> Something went wrong. ('.$CERT_RESPONCE['text'].')</div>';
+					} else {
+						
+						echo '<div class="alert alert-success"><strong>Well done!</strong> '.$CERT_RESPONCE['text'].'</div>';
+						echo '<br>';
+						echo '<h3>Certificate</h3>';
+						echo '<pre>';
+								print_r(str_replace("certificate=", "", $CERT_RESPONCE['details']));
+						echo '</pre>';
+						echo '<br>';
+						echo '<h3>Key</h3>';
+						echo '<pre>';
+								print_r($CERT_RESPONCE['key']);
+						echo '</pre>';
+						
+					}
+
 				}
 				?>
 			</div>
