@@ -1,6 +1,6 @@
 <?php
 
-if($_GET['action'] && $_GET['action'] == "changepw"){
+if(isset($_GET['action']) && $_GET['action'] == "changepw"){
 
 	if($_POST['newpassword'] === $_POST['rnewpassword']){
 		
@@ -9,7 +9,7 @@ if($_GET['action'] && $_GET['action'] == "changepw"){
 		
 		if($func->encrypt($_POST['curpassword'],$key) == $curconfig['PASSWORD']){
 
-			$pass = $func->encrypt($_POST['curpassword'],$key);
+			$pass = $func->encrypt($_POST['rnewpassword'],$key);
 			
 			$dashboard = $config->setSection('dashboard', array(
 									'USERNAME' => $curconfig['USERNAME'],
@@ -18,7 +18,7 @@ if($_GET['action'] && $_GET['action'] == "changepw"){
 									'UNLIMITED_TRIES' => $curconfig['UNLIMITED_TRIES']
 								));
 								
-			$config->write(__DIR__ . "/../config/config.ini", $dashboard);
+			$config->write(__DIR__ . "/../../config/config.ini", $dashboard);
 		
 			$mess = array('1','New password is set.');
 			
@@ -44,13 +44,15 @@ if($_GET['action'] && $_GET['action'] == "changepw"){
 			</div>
 			<div class="body">
 				<?php 
-				if($mess[0] == 1){
-					echo '<div class="alert alert-success"><strong>'.$mess[1].'</strong></div>';
-				} elseif($mess[0] == 2){
-					echo '<div class="alert alert-warning"><strong>'.$mess[1].'</strong></div>';
-				} elseif($mess[0] == 3){
-					echo '<div class="alert alert-warning"><strong>'.$mess[1].'</strong></div>';
-				}	
+				if(isset($mess)){
+					if($mess[0] == 1){
+						echo '<div class="alert alert-success"><strong>'.$mess[1].'</strong></div>';
+					} elseif($mess[0] == 2){
+						echo '<div class="alert alert-warning"><strong>'.$mess[1].'</strong></div>';
+					} elseif($mess[0] == 3){
+						echo '<div class="alert alert-warning"><strong>'.$mess[1].'</strong></div>';
+					}
+				}
 				?>
 				<form class="form-horizontal" action="?page=password&action=changepw" method="POST">
 					<div class="row clearfix">

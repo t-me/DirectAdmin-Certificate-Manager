@@ -5,7 +5,7 @@
 	$i=0;
 	foreach($domains as $domain){
 		
-		$SSL_info = $func->DA_GET_SSL_INFO($domain);
+	$SSL_info = $func->DA_GET_SSL_INFO($domain);
 ?>
 
 	<div class="row clearfix">

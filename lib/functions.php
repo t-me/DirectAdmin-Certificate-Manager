@@ -6,7 +6,7 @@ Class cm_function {
     Public Function __construct() {
 
     }
-
+	
 ##
  # Global Functions
 ##
@@ -60,12 +60,22 @@ Class cm_function {
 		return $da;
 	}
 	
+	public Function DA_CHECK_CONNECTION($da){
+		$check =  $da->fetch_header();
+		// needs a better check
+		if(!$check['x-directadmin']){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	Public Function DA_GET_DOMAINS(){
 		
 		$da = $this->DA_CONNECT();
 		$da->query('/CMD_API_SHOW_DOMAINS');
-		$domains = $da->fetch_parsed_body();
-		
+		$domains = $da->fetch_parsed_body();		
+	
 		return $domains['list'];
 	}
 	
