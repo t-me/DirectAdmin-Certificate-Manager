@@ -19,14 +19,26 @@ if($_GET['action'] && $_GET['action'] == "install"){
 
 	if ($install == true){
 		
-		//sorry maar dit is misschien handig als men het ssl url invult en toch nog er achter https:// zet (kan de beste overkomen)
+		//check directadmin host adres en remove stuff
 		$dahost = $_POST['dahost'];
-
 		$forbiddenurl = array("ssl://https://", ":2222", ":2223", ":2222/", ":2223/");
 		$replaceurl= array("ssl://", "", "", "", "");
-				
 		$dahost = str_replace($forbiddenurl, $replaceurl, $dahost);
 			
+		//check for Let's Encrypt options if there is a "/" add the end or beginning
+		$ledomain = str_replace('','/',trim($_POST['ledomain']));
+		$ledomain = (substr($ledomain,-1)!='/') ? $ledomain.='/' : $ledomain;
+		
+		
+		$lefolder = str_replace('','/',trim($_POST['lefolder']));
+		$lefolder = (substr($lefolder,-1)!='/') ? $lefolder : rtrim ($lefolder,'/');
+		$lefolder = (substr($lefolder,0,1)!='/') ? $lefolder = '/'.$lefolder : $lefolder;
+
+		$lepublic = str_replace('','/',trim($_POST['lepublic']));
+		$lepublic = (substr($lepublic,-1)!='/') ? $lepublic : rtrim ($lepublic,'/');
+		$lepublic = (substr($lepublic,0,1)!='/') ? $lepublic = '/'.$lepublic : $lepublic;
+
+		
 		$key = $_POST['privatekey'];
 		$url = $_POST['baseurl'];
 		$luser = $func->encrypt($_POST['username'],$key);
@@ -52,9 +64,9 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							'PASSWORD' => $dpass
 						),
 						'letsencrypt' => array(
-							'DOMAINFOLDER' => $_POST['ledomain'],
-							'LETSFOLDER' => $_POST['lefolder'],
-							'PUBLICFOLDER' => $_POST['lepublic']
+							'DOMAINFOLDER' => $ledomain,
+							'LETSFOLDER' => $lefolder,
+							'PUBLICFOLDER' => $lepublic
 						));
 		$config->write(__DIR__ . "/config/config.ini", $configArr);					
 							
@@ -200,7 +212,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<i class="material-icons">folder</i>
 						</span>
 						<div class="form-line">
-							<input type="text" class="form-control" name="ledomain" placeholder="Domains Folder">
+							<input type="text" class="form-control" name="ledomain" placeholder="Domains Folder" value="<?php echo strstr(__DIR__, "domains", true)."domains/"; ?>">
 						</div>
 						<div class="help-info">Folder where the domains are stored "example: /home/dausername/domains".</div>
 					</div>
@@ -209,7 +221,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<i class="material-icons">folder</i>
 						</span>
 						<div class="form-line">
-							<input type="text" class="form-control" name="lefolder" placeholder="Let's Encrypt Folder">
+							<input type="text" class="form-control" name="lefolder" placeholder="Let's Encrypt Folder" value="<?php echo "/letsencrypt"; ?>">
 						</div>
 						<div class="help-info">Folder where the certificates are stored "example: /letsencrypt".</div>
 					</div>
@@ -218,7 +230,7 @@ if($_GET['action'] && $_GET['action'] == "install"){
 							<i class="material-icons">folder</i>
 						</span>
 						<div class="form-line">
-							<input type="text" class="form-control" name="lepublic"  placeholder="Public HTML Folder">
+							<input type="text" class="form-control" name="lepublic"  placeholder="Public HTML Folder" value="<?php echo "/public_html"; ?>">
 						</div>
 						<div class="help-info">Folder where the public html is set "example: /public_html"</div>
 					</div>
@@ -228,9 +240,6 @@ if($_GET['action'] && $_GET['action'] == "install"){
 			<div class="row">
 				<div class="col-xs-12">
 					<button class="btn btn-block bg-pink waves-effect" type="submit">Install</button>
-				</div>
-				<div class="col-xs-12">
-				<?php echo getcwd() ; ?>
 				</div>
 			</div>
 					</form>
