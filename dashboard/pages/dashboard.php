@@ -1,11 +1,14 @@
 <?php
-
+	$func->CheckForNewVersion();
+	
 	$domains = $func->DA_GET_DOMAINS();
-
-	$i=0;
-	foreach($domains as $domain){
+	
+	if($domains){
 		
-	$SSL_info = $func->DA_GET_SSL_INFO($domain);
+		$i=0;
+		foreach($domains as $domain){
+
+		$SSL_info = $func->DA_GET_SSL_INFO($domain);
 ?>
 
 	<div class="row clearfix">
@@ -122,8 +125,25 @@
 		</div>
 	</div>
 
-
 <?php
-	$i++;
+		$i++;
+		}
+	} else {
+?>
+
+	<div class="row clearfix">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+			<div class="card">
+				<div class="header bg-red">
+					<h2>ERROR</h2>
+				</div>
+				<div class="body text-center">
+					<strong>Your DirectAdmin settings are wrong. Please check and correct them.</strong>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+<?php 
 	}
 ?>

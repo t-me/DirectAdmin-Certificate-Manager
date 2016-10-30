@@ -19,15 +19,17 @@ if($_GET){
 						<span>Dashboard</span>
 					</a>
 				</li>
-				<li <?php if($page==='domaininfo'){echo 'class="active"';} ?>>
-					<a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
-						<i class="material-icons">public</i>
-						<span>Domains</span>
-					</a>
-					<ul class="ml-menu" style="display: none;">
-						<?php echo $domain_menu;?>
-					</ul>
-				</li>
+				<?php if($domain_menu){?>
+					<li <?php if($page==='domaininfo'){echo 'class="active"';} ?>>
+						<a href="javascript:void(0);" class="menu-toggle waves-effect waves-block">
+							<i class="material-icons">public</i>
+							<span>Domains</span>
+						</a>
+						<ul class="ml-menu" style="display: none;">
+							<?php echo $domain_menu;?>
+						</ul>
+					</li>
+				<?php } ?>
 				<li <?php if($page==='settings'){echo 'class="active"';} ?>>
 					<a href="?page=settings">
 						<i class="material-icons">settings</i>
@@ -46,6 +48,7 @@ if($_GET){
 						<span>Sign Out</span>
 					</a>
 				</li>
+				<?php echo $func->CheckForUpdates(); ?>
 			</ul>
 		</div>
 		<!-- #Menu -->
