@@ -3,44 +3,42 @@
 	$daconfig = $config->getSection('directadmin');
 	$leconfig = $config->getSection('letsencrypt');
 	
-	if($_GET['action'] && $_GET['action'] == "changeda"){
-		
-		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+	if(isset($_GET['action'])){
+		if($_GET['action'] == "changeda"){
 			
-			$dapass = $func->encrypt($_POST['dapass'],$key);
-			
-			$daconfigs = $config->setSection('directadmin', array(
-									'HOST' => $_POST['dahost'],
-									'USERNAME' => $_POST['dauser'],
-									'PASSWORD' => $dapass,
-								));
-								
-			$config->write(__DIR__ . "/../config/config.ini", $daconfigs);
+			if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+				
+				$dapass = $func->encrypt($_POST['dapass'],$key);
+				
+				$daconfigs = $config->setSection('directadmin', array(
+										'HOST' => $_POST['dahost'],
+										'USERNAME' => $_POST['dauser'],
+										'PASSWORD' => $dapass,
+									));
+									
+				$config->write(__DIR__ . "/../../config/config.ini", $daconfigs);
 
-			$da_mess = array('1','DirectAdmin settings changed.');
-			$daconfig = $config->getSection('directadmin');
-			
+				$da_mess = array('1','DirectAdmin settings changed.');
+				$daconfig = $config->getSection('directadmin');
+			}
 		}
 		
-	}
-	
-	if($_GET['action'] && $_GET['action'] == "changele"){
-		
-		if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-		
-			$leconfigs = $config->setSection('letsencrypt', array(
-									'DOMAINFOLDER' => trim($_POST['ledomain']),
-									'LETSFOLDER' => trim($_POST['lefolder']),
-									'PUBLICFOLDER' => trim($_POST['lepublic']),
-								));
-								
-			$config->write(__DIR__ . "/../config/config.ini", $leconfigs);
+		if($_GET['action'] == "changele"){
+			
+			if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
+			
+				$leconfigs = $config->setSection('letsencrypt', array(
+										'DOMAINFOLDER' => trim($_POST['ledomain']),
+										'LETSFOLDER' => trim($_POST['lefolder']),
+										'PUBLICFOLDER' => trim($_POST['lepublic']),
+									));
+									
+				$config->write(__DIR__ . "/../../config/config.ini", $leconfigs);
 
-			$le_mess = array('1','Let\'s Encrypt settings changed.');
-			$leconfig = $config->getSection('letsencrypt');
-		
+				$le_mess = array('1','Let\'s Encrypt settings changed.');
+				$leconfig = $config->getSection('letsencrypt');
+			}
 		}
-		
 	}
 ?>
 
@@ -52,7 +50,7 @@
 			</div>
 			<div class="body">
 				<?php 
-				if($da_mess[0] == 1){
+				if(isset($da_mess)){
 					echo '<div class="alert alert-success"><strong>'.$da_mess[1].'</strong></div>';
 				}
 				?>
@@ -98,7 +96,7 @@
 			</div>
 			<div class="body">
 				<?php 
-				if($le_mess[0] == 1){
+				if(isset($le_mess)){
 					echo '<div class="alert alert-success"><strong>'.$le_mess[1].'</strong></div>';
 				}
 				?>

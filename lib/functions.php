@@ -6,15 +6,17 @@ Class cm_function {
     Public Function __construct() {
 
     }
-
+	
 ##
  # Global Functions
 ##
 	
 	Private Function Get_Config($section){
+		
 		require_once __DIR__ . "/config.php";
 		$config = new Config_Lite(__DIR__ . "/../config/config.ini");
 		return $config->getSection($section);
+		
 	}
 	
 	Public Function encrypt($string,$key){
@@ -29,20 +31,67 @@ Class cm_function {
 		
 	}
 
-	Public Function CheckForUpdates(){
-		#
-		# Still working on this. 
-		# dont want to get a request every time you load a new page.
-		#
-		$LiveUpdateBase = "https://update.tieme-alberts.nl/dacm.txt";
-				
-		$LatestVersion = @file_get_contents($LiveUpdateBase);
-		$CurrentVersion = 0.1;
+	Public Function LE_Dir_Trailing_Slash($dir){
 
-		if (version_compare($CurrentVersion, $LatestVersion, '<')){
-			return '<li><a href="https://github.com/t-me/DireactAdmin-Certificate-Manager" target="_blank" class="waves-effect waves-block"><i class="material-icons col-red">donut_large</i><span>UPDATE AVAILABLE</span></a></li>';
-		}
+		$dir = str_replace('','/',trim($dir));
+		return (substr($dir,-1)!='/') ? $dir.='/' : $dir;
+		
+	}
+	
+	Public Function LE_Dir_Leading_Slash($dir){
+
+		$dir = str_replace('','/',trim($dir));
+		$dir = (substr($dir,-1)!='/') ? $dir : rtrim ($dir,'/');
+		return (substr($dir,0,1)!='/') ? $dir = '/'.$dir : $dir;
+		
+	}
+
+	Public Function GetVersion(){
+		$LiveUpdateBase = "https://update.tieme-alberts.nl/dacm.txt";
+		$version = @file_get_contents($LiveUpdateBase);
+		return $version;
+	}
+	
+	Public Function CheckForNewVersion(){
+
+		$rootconfig = $this->Get_Config('root');
+		$lastcheck = $rootconfig['lastcheck'];
+		
+		$date = new DateTime($lastcheck);
+		$now = new DateTime();
+		$diff = $now->diff($date);
+		if($diff->days > 7) {
+
+			require_once __DIR__ . "/config.php";
+			$config = new Config_Lite(__DIR__ . "/../config/config.ini");
+		
+			$newConfig = $config->setSection('root', array(
+										'install' => $rootconfig['install'],
+										'privatekey' => $rootconfig['privatekey'],
+										'base_url' => $rootconfig['base_url'],
+										'lastcheck' => date_format(new DateTime(), 'd-m-Y'),
+										'cversion' => $rootconfig['cversion'],
+										'lversion' => $this->GetVersion()
+									));
+									
+			$config->write(__DIR__ . "/../config/config.ini", $newConfig);
 			
+		}
+		
+	}
+	
+	Public Function CheckForUpdates(){
+		
+		$config = $this->Get_Config('root');
+		
+		$CurrentVersion = $config['cversion'];
+		$LatestVersion = $config['lversion'];
+		
+		if(version_compare($CurrentVersion, $LatestVersion, '<')){
+			return '<hr><li><a href="https://github.com/t-me/DireactAdmin-Certificate-Manager" target="_blank" class="waves-effect waves-block"><i class="material-icons col-red">donut_large</i><span>UPDATE AVAILABLE</span></a></li>';
+		}else{
+			return '';
+		}
 	}
 ##
  # DirectAdmin Functions
@@ -59,14 +108,19 @@ Class cm_function {
 		
 		return $da;
 	}
-	
+		
 	Public Function DA_GET_DOMAINS(){
 		
 		$da = $this->DA_CONNECT();
 		$da->query('/CMD_API_SHOW_DOMAINS');
-		$domains = $da->fetch_parsed_body();
+		$domains = $da->fetch_parsed_body();		
+	
+		if($domains == ""){
+			return false;
+		}
 		
 		return $domains['list'];
+		
 	}
 	
 	Public Function DA_GET_SUB_DOMAINS($domain){
@@ -79,6 +133,7 @@ Class cm_function {
 		$domains = $da->fetch_parsed_body();
 		
 		return $domains['list'];
+		
 	}
 	
 	Public Function DA_GET_DOMAINS_MENU(){
@@ -87,11 +142,16 @@ Class cm_function {
 		$da->query('/CMD_API_SHOW_DOMAINS');
 		$domains = $da->fetch_parsed_body();
 		
+		if($domains == ""){
+			return false;
+		} 
+		
 		$menu_item = '';
-		foreach ($domains['list'] as $domain){
+		foreach($domains['list'] as $domain){
 			$menu_item .= '<li><a href="?page=domaininfo&domain='.$domain.'" class=" waves-effect waves-block">'.$domain.'</a></li>';
 		}
 		return $menu_item;
+		
 	}
 	
 	Public Function DA_GET_SSL_INFO($domain){

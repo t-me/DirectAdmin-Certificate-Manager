@@ -1,4 +1,5 @@
 <?php
+
 $filename = __DIR__ . "/config/config.ini";
 if (!file_exists($filename)) {
     echo "The file $filename does not exist";
@@ -26,18 +27,9 @@ if($_GET['action'] && $_GET['action'] == "install"){
 		$dahost = str_replace($forbiddenurl, $replaceurl, $dahost);
 			
 		//check for Let's Encrypt options if there is a "/" add the end or beginning
-		$ledomain = str_replace('','/',trim($_POST['ledomain']));
-		$ledomain = (substr($ledomain,-1)!='/') ? $ledomain.='/' : $ledomain;
-		
-		
-		$lefolder = str_replace('','/',trim($_POST['lefolder']));
-		$lefolder = (substr($lefolder,-1)!='/') ? $lefolder : rtrim ($lefolder,'/');
-		$lefolder = (substr($lefolder,0,1)!='/') ? $lefolder = '/'.$lefolder : $lefolder;
-
-		$lepublic = str_replace('','/',trim($_POST['lepublic']));
-		$lepublic = (substr($lepublic,-1)!='/') ? $lepublic : rtrim ($lepublic,'/');
-		$lepublic = (substr($lepublic,0,1)!='/') ? $lepublic = '/'.$lepublic : $lepublic;
-
+		$ledomain = $func->LE_Dir_Trailing_Slash($_POST['ledomain']);	
+		$lefolder = $func->LE_Dir_Leading_Slash($_POST['lefolder']);
+		$lepublic = $func->LE_Dir_Leading_Slash($_POST['lepublic']);
 		
 		$key = $_POST['privatekey'];
 		$url = $_POST['baseurl'];
@@ -50,7 +42,10 @@ if($_GET['action'] && $_GET['action'] == "install"){
 						'root' => array(
 							'install' => false,
 							'privatekey' => $key,
-							'base_url' => $url
+							'base_url' => $url,
+							'lastcheck' => date_format(new DateTime(), 'd-m-Y'),
+							'cversion' => '0.2',
+							'lversion' => $func->GetVersion()
 						),
 						'dashboard' => array(
 							'USERNAME' => $luser,
@@ -115,16 +110,14 @@ if($_GET['action'] && $_GET['action'] == "install"){
 				<div class="row m-t-15 m-b--20">
 					<div class="col-xs-12">
 						<div class="alert bg-green align-center">
-                            Install is complete, you can now login.
-							<a href="./index.php">here<a>
+                            Install is complete, you can now login. <a href="index.php" class="alert-link">HERE<a>
                         </div>
 					</div>
 				</div>
 				<div class="row m-b--20">
 					<div class="col-xs-12">
 						<div class="alert bg-blue align-center">
-							For security reasons
-							<br>Please remove this file from your server.
+							For security reasons <br>Please remove this file from your server.
 						</div>
 					</div>
 				</div>
