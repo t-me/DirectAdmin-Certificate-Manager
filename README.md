@@ -1,8 +1,9 @@
-![Licence](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square) ![Build](https://img.shields.io/badge/Build-Alpa-red.svg?style=flat-square) ![Version](https://img.shields.io/badge/Version-V_0.1-green.svg?style=flat-square)
+![Licence](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square) ![Build](https://img.shields.io/badge/Build-Alpa-red.svg?style=flat-square) ![Version](https://img.shields.io/badge/Version-V_0.2-green.svg?style=flat-square)
 # DireactAdmin-Certificate-Manager
 
 ## **WARNING**
-> **This project is still in alpha phase, use at your own risk.**
+> **This project is still in development**
+> **See #TO DO**
 
 ### About DireactAdmin-Certificate-Manager
 This is a little programm for the users that has DirectAdmin as Control panel on there hosting
@@ -10,7 +11,7 @@ With this manager you can manage all your site's Certificate that you have under
 You can **make** and **renew** Let's Encrypt Certificates and see all the info of your current Certificates.
 
 ### Requirements
-* Needs hosting with Directadmin
+* Needs hosting with Directadmin api
 
 ### How to use
  * Download the complete package
@@ -19,6 +20,11 @@ You can **make** and **renew** Let's Encrypt Certificates and see all the info o
  * Go to yourserver.com/subdirectory
  * install
  * Login and use it
+
+### ToDo
+ * SSL Cert install Step 3 : If error or warning don't show button step 4.
+ * SSL Cert install Step 3 : If Everything is Correct remove the .well-know directory.
+ * SSL Cert install Step 4 : Enable SSL When it is not enabled (DA API)
 
 ### Why i created DireactAdmin Certificate Manager?
 Because of a simple interface to see if my websites hava a SSL Certificate and till when are the valid.
