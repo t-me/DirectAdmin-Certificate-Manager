@@ -11,10 +11,10 @@
 				$dapass = $func->encrypt($_POST['dapass'],$key);
 				
 				$daconfigs = $config->setSection('directadmin', array(
-										'HOST' => $_POST['dahost'],
-										'USERNAME' => $_POST['dauser'],
-										'PASSWORD' => $dapass,
-									));
+					'HOST' => $_POST['dahost'],
+					'USERNAME' => $_POST['dauser'],
+					'PASSWORD' => $dapass,
+				));
 									
 				$config->write(__DIR__ . "/../../config/config.ini", $daconfigs);
 
@@ -26,12 +26,12 @@
 		if($_GET['action'] == "changele"){
 			
 			if ( $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-			
+					
 				$leconfigs = $config->setSection('letsencrypt', array(
-										'DOMAINFOLDER' => trim($_POST['ledomain']),
-										'LETSFOLDER' => trim($_POST['lefolder']),
-										'PUBLICFOLDER' => trim($_POST['lepublic']),
-									));
+					'DOMAINFOLDER' => $func->LE_Dir_Trailing_Slash(trim($_POST['ledomain'])),
+					'LETSFOLDER' => $func->LE_Dir_Leading_Slash(trim($_POST['lefolder'])),
+					'PUBLICFOLDER' => $func->LE_Dir_Leading_Slash(trim($_POST['lepublic'])),
+				));
 									
 				$config->write(__DIR__ . "/../../config/config.ini", $leconfigs);
 
