@@ -10,6 +10,7 @@ Thumbs.db
 
 #  CM FILE'S & DIRS  #
 ######################
+test/
 update/
 .well-known/
 config/config.ini

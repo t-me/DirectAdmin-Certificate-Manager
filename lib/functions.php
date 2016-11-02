@@ -66,13 +66,13 @@ Class cm_function {
 			$config = new Config_Lite(__DIR__ . "/../config/config.ini");
 		
 			$newConfig = $config->setSection('root', array(
-										'install' => $rootconfig['install'],
-										'privatekey' => $rootconfig['privatekey'],
-										'base_url' => $rootconfig['base_url'],
-										'lastcheck' => date_format(new DateTime(), 'd-m-Y'),
-										'cversion' => $rootconfig['cversion'],
-										'lversion' => $this->GetVersion()
-									));
+				'install' => $rootconfig['install'],
+				'privatekey' => $rootconfig['privatekey'],
+				'base_url' => $rootconfig['base_url'],
+				'lastcheck' => date_format(new DateTime(), 'd-m-Y'),
+				'cversion' => $rootconfig['cversion'],
+				'lversion' => $this->GetVersion()
+			));
 									
 			$config->write(__DIR__ . "/../config/config.ini", $newConfig);
 			
@@ -250,6 +250,7 @@ Class cm_function {
 	
 	Public Function SSL_SET_CERT($dir,$domain){
 		
+		// Paste Cirtificat in directadmin.
 		$cert_location = $dir.'/'.$domain;
 		
 		$cert_key = file_get_contents($cert_location.'/private.pem');
@@ -257,9 +258,7 @@ Class cm_function {
 		
 		$certificate = $cert_key.$cert_chain;
 		$certificate = preg_replace("/(^[\r\n]*|[\r\n]+)[\s\t]*[\r\n]+/", "\n", $certificate);
-		
-		//$domaininfo = $this->DA_GET_DOMAIN($domain);
-		
+				
 		$da = $this->DA_CONNECT();
 		
 		$da->method = "POST";
@@ -269,25 +268,58 @@ Class cm_function {
 				'domain' => $domain,
 				'action' => 'save',
 				'type' => 'paste',
+				'active' => 'yes',
 				'certificate' => $certificate
 			));
 		$resultPasteSSL = $da->fetch_parsed_body();
-	/*
-		$da->query('/CMD_API_DOMAIN',
-			array(
-				'action' => 'modify',
-				'bandwidth'=> $domaininfo['bandwidth'],
-				'quota'=> $domaininfo['quota'],
-				'domain' => $domaininfo['domain'],
-				'ssl' => 'ON',
-				'cgi' => $domaininfo['cgi'],
-				'php' => $domaininfo['php']
-			));
-			
-		$resultActivateSSL = $da->fetch_parsed_body();
+
+		// Check if SSL is Enabled if not Enabled it.
+		$domaininfo = $this->DA_GET_DOMAIN($domain);
+		if($domaininfo['ssl'] == 'OFF'){
 		
-		return array($resultPasteSSL,$resultActivateSSL);
-	*/	
+			$domainarr = array();
+			
+			$domainarr['action'] = 'modify';
+			$domainarr['domain'] = $domain;
+			
+			if($domaininfo['bandwidth'] == 'unlimited'){
+				$domainarr['ubandwidth'] = 'unlimited';
+			} else {
+				$domainarr['bandwidth'] = $domaininfo['bandwidth'];
+			}
+			
+			if($domaininfo['quota'] == 'unlimited'){
+				$domainarr['uquota'] = 'unlimited';
+			} else {
+				$domainarr['quota'] = $domaininfo['quota'];
+			}
+			
+			$domainarr['ssl'] = 'ON';
+			$domainarr['cgi'] = $domaininfo['cgi'];
+			$domainarr['php'] = $domaininfo['php'];
+
+			$da = $this->DA_CONNECT();
+			
+			$da->query('/CMD_API_DOMAIN',$domainarr);
+				
+			$resultActivateSSL = $da->fetch_parsed_body();
+			
+			return array_merge($resultActivateSSL,$resultPasteSSL);
+		}
+		
 		return $resultPasteSSL;
+	}
+	
+	Public Function SET_CERT_TEST($domain){
+		
+		$da = $this->DA_CONNECT();
+		$da->query('/CMD_API_SSL',
+			array(
+				'domain' => $domain
+			));
+		$ssl = $da->fetch_parsed_body();
+
+		return $ssl;
+
 	}
 }
