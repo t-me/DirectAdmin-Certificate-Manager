@@ -304,7 +304,7 @@ Class cm_function {
 				
 			$resultActivateSSL = $da->fetch_parsed_body();
 			
-			return $resultActivateSSL . $resultPasteSSL;
+			return array_merge($resultActivateSSL,$resultPasteSSL);
 		}
 		
 		return $resultPasteSSL;
@@ -312,37 +312,14 @@ Class cm_function {
 	
 	Public Function SET_CERT_TEST($domain){
 		
-		$domaininfo = $this->DA_GET_DOMAIN($domain);
-		
-		if($domaininfo['ssl'] == "OFF"){
-		
-			$domainarr = array();
-			
-			$domainarr['action'] = 'modify';
-			$domainarr['domain'] = $domain;
-			
-			if($domaininfo['bandwidth'] == "unlimited"){
-				$domainarr['ubandwidth'] = 'unlimited';
-			} else {
-				$domainarr['bandwidth'] = $domaininfo['bandwidth'];
-			}
-			
-			if($domaininfo['quota'] == "unlimited"){
-				$domainarr['uquota'] = 'unlimited';
-			} else {
-				$domainarr['quota'] = $domaininfo['quota'];
-			}
-			
-			$domainarr['ssl'] = 'ON';
-			$domainarr['cgi'] = $domaininfo['cgi'];
-			$domainarr['php'] = $domaininfo['php'];
+		$da = $this->DA_CONNECT();
+		$da->query('/CMD_API_SSL',
+			array(
+				'domain' => $domain
+			));
+		$ssl = $da->fetch_parsed_body();
 
-			$da = $this->DA_CONNECT();
-			
-			$da->query('/CMD_API_DOMAIN',$domainarr);
-				
-			return $da->fetch_parsed_body();
-			
-		}
+		return $ssl;
+
 	}
 }

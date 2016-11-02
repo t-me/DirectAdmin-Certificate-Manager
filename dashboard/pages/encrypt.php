@@ -105,22 +105,33 @@
 						$le = new \Lescript($_POST['lefolder'], $_POST['pufolder'], $logger);
 						$le->initAccount();
 						$le->signDomains(preg_split("/[\s,]+/",$_POST['domains']),$maindomain);
-
+						
+						$nextstep = true;
+					
 					} catch (\Exception $e) {
 						
 						$logger->error($e->getMessage());
 						$logger->error($e->getTraceAsString());
 
+						$nextstep = false;
 					}
 					echo '</pre>';
+					if($nextstep == false){
 				?>
-				<form class="form-horizontal" action="?page=encrypt&domain=<?php echo $domain; ?>&step=4" method="POST">
-					<input type="hidden" name="lefolder" value="<?php echo $_POST['lefolder'] ?>">
-					<div class="clearfix">
-						<button type="submit" class="btn btn-primary m-t-15 waves-effect pull-right">Go To Step 4 (Install Certificates in DirectAdmin)</button>
-					</div>
-				</form>
+					<div class="alert alert-danger">
+                        <strong>Oh snap!</strong> Look at the log above.
+                    </div>
 				<?php
+					} else {
+				?>
+					<form class="form-horizontal" action="?page=encrypt&domain=<?php echo $domain; ?>&step=4" method="POST">
+						<input type="hidden" name="lefolder" value="<?php echo $_POST['lefolder'] ?>">
+						<div class="clearfix">
+							<button type="submit" class="btn btn-primary m-t-15 waves-effect pull-right">Go To Step 4 (Install Certificates in DirectAdmin)</button>
+						</div>
+					</form>
+				<?php
+					}
 				}elseif($step==4){
 					$CERT_RESPONCE = $func->SSL_SET_CERT($_POST['lefolder'],$domain);
 					
