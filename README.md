@@ -22,7 +22,7 @@ You can **make** and **renew** Let's Encrypt Certificates and see all the info o
  * Login and use it
 
 ### ToDo
- * SSL Cert install Step 3 : If error or warning don't show button step 4.
+ * Redo Function "DA_GET_SSL_INFO" if SSL anabeld check httpsite for valid ssl not DA because of servercetificat error
  * SSL Cert install Step 3 : If Everything is Correct remove the .well-know directory.
  * SSL Cert install Step 4 : Enable SSL When it is not enabled (DA API)
 
